@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import roomescape.service.dto.LoginCheckResponse;
-import roomescape.service.dto.LoginRequest;
+import roomescape.service.dto.LoginCheckOutput;
+import roomescape.service.dto.LoginInput;
 
 class AuthIntegrationTest extends IntegrationTest {
     @Nested
@@ -19,7 +19,7 @@ class AuthIntegrationTest extends IntegrationTest {
         void 이메일과_비밀번호로_로그인할_수_있다() {
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(new LoginRequest("admin@email.com", "password"))
+                    .body(new LoginInput("admin@email.com", "password"))
                     .when().post("/login")
                     .then().log().all()
                     .statusCode(200);
@@ -29,7 +29,7 @@ class AuthIntegrationTest extends IntegrationTest {
         void 이메일이나_비밀번호가_틀리면_로그인할_수_없다() {
             RestAssured.given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(new LoginRequest("admin@email.com", "wrongpassword"))
+                    .body(new LoginInput("admin@email.com", "wrongpassword"))
                     .when().post("/login")
                     .then().log().all()
                     .statusCode(401);
@@ -41,11 +41,11 @@ class AuthIntegrationTest extends IntegrationTest {
     class LoginCheck {
         @Test
         void 토큰으로_로그인한_사용자_정보를_조회할_수_있다() {
-            LoginCheckResponse response = RestAssured.given().log().all()
+            LoginCheckOutput response = RestAssured.given().log().all()
                     .header("Cookie", cookieProvider.getCookie())
                     .when().get("/login/check")
                     .then().log().all()
-                    .statusCode(HttpStatus.OK.value()).extract().as(LoginCheckResponse.class);
+                    .statusCode(HttpStatus.OK.value()).extract().as(LoginCheckOutput.class);
 
             assertThat(response.getName()).isEqualTo("어드민");
         }

@@ -5,19 +5,17 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.time.LocalTime;
 import roomescape.domain.ReservationTime;
 
-public class AvailableReservationTimeResponse {
+public class ReservationTimeOutput {
     private final Long id;
     private final LocalTime startAt;
-    private final boolean alreadyBooked;
 
-    public AvailableReservationTimeResponse(Long id, LocalTime startAt, boolean alreadyBooked) {
+    public ReservationTimeOutput(Long id, LocalTime startAt) {
         this.id = id;
         this.startAt = startAt;
-        this.alreadyBooked = alreadyBooked;
     }
 
-    public AvailableReservationTimeResponse(ReservationTime time, boolean alreadyBooked) {
-        this(time.getId(), time.getStartAt(), alreadyBooked);
+    public ReservationTimeOutput(ReservationTime time) {
+        this(time.getId(), time.getStartAt());
     }
 
     public Long getId() {
@@ -27,9 +25,5 @@ public class AvailableReservationTimeResponse {
     @JsonFormat(shape = Shape.STRING, pattern = "HH:mm")
     public LocalTime getStartAt() {
         return startAt;
-    }
-
-    public boolean isAlreadyBooked() {
-        return alreadyBooked;
     }
 }

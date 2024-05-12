@@ -2,24 +2,32 @@ package roomescape.service.dto;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import roomescape.controller.dto.AdminReservationRequest;
+import roomescape.controller.dto.ReservationRequest;
 import roomescape.domain.Member;
 import roomescape.domain.Reservation;
 import roomescape.domain.ReservationTime;
 import roomescape.domain.Theme;
 
-public class ReservationRequest {
+public class ReservationInput {
     private final LocalDate date;
     private final Long timeId;
     private final Long themeId;
 
-    public ReservationRequest(String date, String timeId, String themeId) {
+    public ReservationInput(String date, String timeId, String themeId) {
         validate(date, timeId, themeId);
         this.date = LocalDate.parse(date);
         this.timeId = Long.parseLong(timeId);
         this.themeId = Long.parseLong(themeId);
     }
 
-    public ReservationRequest(AdminReservationRequest request) {
+    public ReservationInput(ReservationRequest request) {
+        this.date = request.getDate();
+        this.timeId = request.getTimeId();
+        this.themeId = request.getThemeId();
+    }
+
+    public ReservationInput(AdminReservationRequest request) {
         this.date = request.getDate();
         this.timeId = request.getTimeId();
         this.themeId = request.getThemeId();

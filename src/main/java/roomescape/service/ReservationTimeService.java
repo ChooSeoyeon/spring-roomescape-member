@@ -9,9 +9,9 @@ import roomescape.domain.ReservationTimeRepository;
 import roomescape.exception.time.DuplicatedTimeException;
 import roomescape.exception.time.NotFoundTimeException;
 import roomescape.exception.time.ReservationReferencedTimeException;
-import roomescape.service.dto.AvailableReservationTimeResponse;
-import roomescape.service.dto.ReservationTimeRequest;
-import roomescape.service.dto.ReservationTimeResponse;
+import roomescape.service.dto.AvailableReservationTimeOutput;
+import roomescape.service.dto.ReservationTimeInput;
+import roomescape.service.dto.ReservationTimeOutput;
 
 @Service
 public class ReservationTimeService {
@@ -24,14 +24,14 @@ public class ReservationTimeService {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<ReservationTimeResponse> findAllReservationTime() {
+    public List<ReservationTimeOutput> findAllReservationTime() {
         List<ReservationTime> reservationTimes = reservationTimeRepository.findAll();
         return reservationTimes.stream()
-                .map(ReservationTimeResponse::new)
+                .map(ReservationTimeOutput::new)
                 .toList();
     }
 
-    public List<AvailableReservationTimeResponse> findAllAvailableReservationTime(LocalDate date, long themeId) {
+    public List<AvailableReservationTimeOutput> findAllAvailableReservationTime(LocalDate date, long themeId) {
         List<Long> bookedTimeIds = reservationRepository.findTimeIdByDateAndThemeId(date, themeId);
         List<ReservationTime> reservationTimes = reservationTimeRepository.findAll();
         return reservationTimes.stream()
@@ -39,19 +39,19 @@ public class ReservationTimeService {
                 .toList();
     }
 
-    private AvailableReservationTimeResponse toAvailableReservationTimeResponse(
+    private AvailableReservationTimeOutput toAvailableReservationTimeResponse(
             ReservationTime time, List<Long> bookedTimeIds) {
         boolean alreadyBooked = time.isAlreadyBooked(bookedTimeIds);
-        return new AvailableReservationTimeResponse(time, alreadyBooked);
+        return new AvailableReservationTimeOutput(time, alreadyBooked);
     }
 
-    public ReservationTimeResponse saveReservationTime(ReservationTimeRequest request) {
+    public ReservationTimeOutput saveReservationTime(ReservationTimeInput request) {
         if (reservationTimeRepository.existsByStartAt(request.getStartAt())) {
             throw new DuplicatedTimeException();
         }
         ReservationTime reservationTime = request.toReservationTime();
         ReservationTime savedReservationTime = reservationTimeRepository.save(reservationTime);
-        return new ReservationTimeResponse(savedReservationTime);
+        return new ReservationTimeOutput(savedReservationTime);
     }
 
     public void deleteReservationTime(long id) {

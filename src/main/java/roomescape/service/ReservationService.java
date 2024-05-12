@@ -19,9 +19,8 @@ import roomescape.exception.reservation.InvalidDateTimeReservationException;
 import roomescape.exception.reservation.NotFoundReservationException;
 import roomescape.exception.theme.NotFoundThemeException;
 import roomescape.exception.time.NotFoundTimeException;
-import roomescape.service.dto.AdminReservationRequest;
-import roomescape.service.dto.ReservationRequest;
-import roomescape.service.dto.ReservationResponse;
+import roomescape.service.dto.ReservationInput;
+import roomescape.service.dto.ReservationOutput;
 
 @Service
 public class ReservationService {
@@ -32,8 +31,10 @@ public class ReservationService {
     private final Clock clock;
 
     public ReservationService(ReservationRepository reservationRepository,
-                              ReservationTimeRepository reservationTimeRepository, ThemeRepository themeRepository,
-                              MemberRepository memberRepository, Clock clock) {
+                              ReservationTimeRepository reservationTimeRepository,
+                              ThemeRepository themeRepository,
+                              MemberRepository memberRepository,
+                              Clock clock) {
         this.reservationRepository = reservationRepository;
         this.reservationTimeRepository = reservationTimeRepository;
         this.themeRepository = themeRepository;
@@ -41,16 +42,16 @@ public class ReservationService {
         this.clock = clock;
     }
 
-    public List<ReservationResponse> findAllReservation(
+    public List<ReservationOutput> findAllReservation(
             Long memberId, Long themeId, LocalDate dateFrom, LocalDate dateTo) {
         String name = memberRepository.findNameById(memberId);
         List<Reservation> reservations = reservationRepository.findAll(name, themeId, dateFrom, dateTo);
         return reservations.stream()
-                .map(ReservationResponse::new)
+                .map(ReservationOutput::new)
                 .toList();
     }
 
-    public ReservationResponse saveReservation(ReservationRequest request, Member member) {
+    public ReservationOutput saveReservation(ReservationInput request, Member member) {
         ReservationTime time = findReservationTimeById(request.getTimeId());
         Theme theme = findThemeById(request.getThemeId());
 
@@ -59,28 +60,26 @@ public class ReservationService {
 
         Reservation reservation = request.toReservation(member, time, theme);
         Reservation savedReservation = reservationRepository.save(reservation);
-        return new ReservationResponse(savedReservation);
+        return new ReservationOutput(savedReservation);
     }
 
-    private void validateDuplicateReservation(ReservationRequest request) {
+    private void validateDuplicateReservation(ReservationInput request) {
         if (reservationRepository.existsByDateAndTimeIdAndThemeId(
                 request.getDate(), request.getTimeId(), request.getThemeId())) {
             throw new DuplicatedReservationException();
         }
     }
 
-    private void validateDateTimeReservation(ReservationRequest request, ReservationTime time) {
+    private void validateDateTimeReservation(ReservationInput request, ReservationTime time) {
         LocalDateTime localDateTime = request.getDate().atTime(time.getStartAt());
         if (localDateTime.isBefore(LocalDateTime.now(clock))) {
             throw new InvalidDateTimeReservationException();
         }
     }
 
-    public ReservationResponse saveReservationByAdmin(AdminReservationRequest request) {
-        Member member = findMemberById(request.getMemberId());
-        ReservationRequest reservationRequest = new ReservationRequest(
-                request); // TODO: service dto랑 controller dto 분리하기
-        return saveReservation(reservationRequest, member);
+    public ReservationOutput saveReservationByAdmin(ReservationInput input, Long memberId) {
+        Member member = findMemberById(memberId);
+        return saveReservation(input, member);
     }
 
     public void deleteReservation(long id) {

@@ -3,15 +3,15 @@ package roomescape.service.dto;
 import java.time.LocalDate;
 import roomescape.domain.Reservation;
 
-public class ReservationResponse {
+public class ReservationOutput {
     private final Long id;
     private final String name;
     private final LocalDate date;
-    private final ReservationTimeResponse time;
-    private final ThemeResponse theme;
+    private final ReservationTimeOutput time;
+    private final ThemeOutput theme;
 
-    public ReservationResponse(
-            Long id, String name, LocalDate date, ReservationTimeResponse time, ThemeResponse theme) {
+    public ReservationOutput(
+            Long id, String name, LocalDate date, ReservationTimeOutput time, ThemeOutput theme) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -19,12 +19,12 @@ public class ReservationResponse {
         this.theme = theme;
     }
 
-    public ReservationResponse(Reservation reservation) {
+    public ReservationOutput(Reservation reservation) {
         this(reservation.getId(),
                 reservation.getName(),
                 reservation.getDate(),
-                new ReservationTimeResponse(reservation.getTime()),
-                new ThemeResponse(reservation.getTheme())
+                new ReservationTimeOutput(reservation.getTime()),
+                new ThemeOutput(reservation.getTheme())
         );
     }
 
@@ -40,11 +40,11 @@ public class ReservationResponse {
         return date;
     }
 
-    public ReservationTimeResponse getTime() {
+    public ReservationTimeOutput getTime() {
         return time;
     }
 
-    public ThemeResponse getTheme() {
+    public ThemeOutput getTheme() {
         return theme;
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import roomescape.domain.Member;
 import roomescape.domain.MemberRepository;
 import roomescape.exception.auth.InvalidTokenException;
-import roomescape.service.dto.MemberResponse;
+import roomescape.service.dto.MemberOutput;
 
 @Service
 public class MemberService {
@@ -15,10 +15,10 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public List<MemberResponse> findAllMember() {
+    public List<MemberOutput> findAllMember() {
         List<Member> members = memberRepository.findAll();
         return members.stream()
-                .map(MemberResponse::new)
+                .map(MemberOutput::new)
                 .toList();
     }
 

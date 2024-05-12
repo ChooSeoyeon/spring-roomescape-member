@@ -1,6 +1,7 @@
-package roomescape.service.dto;
+package roomescape.controller.dto;
 
 import roomescape.domain.Theme;
+import roomescape.service.dto.ThemeOutput;
 
 public class ThemeResponse {
     private final Long id;
@@ -21,6 +22,10 @@ public class ThemeResponse {
                 theme.getDescription(),
                 theme.getThumbnail()
         );
+    }
+
+    public ThemeResponse(ThemeOutput output) {
+        this(output.getId(), output.getName(), output.getDescription(), output.getThumbnail());
     }
 
     public Long getId() {

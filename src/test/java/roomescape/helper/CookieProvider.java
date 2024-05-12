@@ -3,7 +3,7 @@ package roomescape.helper;
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import roomescape.service.dto.LoginRequest;
+import roomescape.service.dto.LoginInput;
 
 @Component
 public class CookieProvider {
@@ -16,7 +16,7 @@ public class CookieProvider {
     private String createCookie() {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new LoginRequest("admin@email.com", "password"))
+                .body(new LoginInput("admin@email.com", "password"))
                 .when().post("/login")
                 .then().log().all()
                 .extract().header("Set-Cookie").split(";")[0];

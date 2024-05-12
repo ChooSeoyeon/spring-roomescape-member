@@ -9,8 +9,8 @@ import roomescape.domain.Theme;
 import roomescape.domain.ThemeRepository;
 import roomescape.exception.theme.NotFoundThemeException;
 import roomescape.exception.theme.ReservationReferencedThemeException;
-import roomescape.service.dto.ThemeRequest;
-import roomescape.service.dto.ThemeResponse;
+import roomescape.service.dto.ThemeInput;
+import roomescape.service.dto.ThemeOutput;
 
 @Service
 public class ThemeService {
@@ -24,26 +24,26 @@ public class ThemeService {
         this.clock = clock;
     }
 
-    public List<ThemeResponse> findAllTheme() {
+    public List<ThemeOutput> findAllTheme() {
         List<Theme> themes = themeRepository.findAll();
         return themes.stream()
-                .map(ThemeResponse::new)
+                .map(ThemeOutput::new)
                 .toList();
     }
 
-    public List<ThemeResponse> findAllPopularTheme() {
+    public List<ThemeOutput> findAllPopularTheme() {
         String startDate = LocalDate.now(clock).minusDays(7L).toString();
         String endDate = LocalDate.now(clock).toString();
         List<Theme> themes = reservationRepository.findThemeWithMostPopularReservation(startDate, endDate);
         return themes.stream()
-                .map(ThemeResponse::new)
+                .map(ThemeOutput::new)
                 .toList();
     }
 
-    public ThemeResponse saveTheme(ThemeRequest request) {
+    public ThemeOutput saveTheme(ThemeInput request) {
         Theme theme = request.toTheme();
         Theme savedTheme = themeRepository.save(theme);
-        return new ThemeResponse(savedTheme);
+        return new ThemeOutput(savedTheme);
     }
 
     public void deleteTheme(long id) {

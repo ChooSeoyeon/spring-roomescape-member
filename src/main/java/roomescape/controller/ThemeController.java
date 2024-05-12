@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.service.ThemeService;
-import roomescape.service.dto.ThemeRequest;
-import roomescape.service.dto.ThemeResponse;
+import roomescape.service.dto.ThemeInput;
+import roomescape.service.dto.ThemeOutput;
 
 @RequestMapping("/themes")
 @RestController
@@ -24,20 +24,20 @@ public class ThemeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ThemeResponse>> findAllTheme() {
-        List<ThemeResponse> response = themeService.findAllTheme();
+    public ResponseEntity<List<ThemeOutput>> findAllTheme() {
+        List<ThemeOutput> response = themeService.findAllTheme();
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/ranking")
-    public ResponseEntity<List<ThemeResponse>> findAllPopularTheme() {
-        List<ThemeResponse> response = themeService.findAllPopularTheme();
+    public ResponseEntity<List<ThemeOutput>> findAllPopularTheme() {
+        List<ThemeOutput> response = themeService.findAllPopularTheme();
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping
-    public ResponseEntity<ThemeResponse> saveTheme(@RequestBody ThemeRequest request) {
-        ThemeResponse response = themeService.saveTheme(request);
+    public ResponseEntity<ThemeOutput> saveTheme(@RequestBody ThemeInput request) {
+        ThemeOutput response = themeService.saveTheme(request);
         return ResponseEntity.created(URI.create("/themes/" + response.getId())).body(response);
     }
 
