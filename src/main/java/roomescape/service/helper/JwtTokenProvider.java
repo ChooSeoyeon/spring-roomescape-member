@@ -60,4 +60,16 @@ public class JwtTokenProvider {
             throw new InvalidTokenException();
         }
     }
+
+    public void validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException();
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        }
+    }
 }

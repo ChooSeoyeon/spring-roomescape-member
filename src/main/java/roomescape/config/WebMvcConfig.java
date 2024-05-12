@@ -27,6 +27,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new CheckLoginInterceptor(cookieExtractor, jwtTokenProvider))
+//                .excludePathPatterns("/login");
         registry.addInterceptor(new CheckAdminInterceptor(cookieExtractor, jwtTokenProvider))
                 .addPathPatterns("/admin/**");
     }
